@@ -7,8 +7,11 @@ from django.http import JsonResponse
 
 # Првична страница која ги прикажува сите продукти
 def index(request):
-    products = Product.objects.all()  # земи сите производи од базата
-    return render(request, 'index.html', {'products': products})
+    products = Product.objects.all()
+    sorted_products = sorted(products, key=lambda x: x.quantity, reverse=True)
+
+    # Испратете ги во шаблонот
+    return render(request, 'index.html', {'products': sorted_products})
 
 
 # Функција која ја користи за да испрати емаил за нарачката
@@ -20,6 +23,7 @@ def send_order_email(order_data):
     message += f"Град: {order_data['city']}\n"
     message += f"Вејп: {order_data['product_name']}\n"
     message += f"Цена: {order_data['product_price']}\n"
+    message += f"Вкус: {order_data['flavor']}\n"  # Додавање на вкусот
 
     try:
         # Испраќање на емаил до администраторот
@@ -34,6 +38,7 @@ def send_order_email(order_data):
         return JsonResponse({'message': f'Грешка при испраќање на емаил: {str(e)}'}, status=500)
 
 
+
 # Функција за обработка на нарачката и испраќање емаил
 def submit_order(request):
     if request.method == 'POST':
@@ -42,7 +47,7 @@ def submit_order(request):
             data = json.loads(request.body)
 
             # Проверка дали сите потребни податоци се присутни
-            required_fields = ['full_name', 'phone', 'address', 'city', 'product_name', 'product_price']
+            required_fields = ['full_name', 'phone', 'address', 'city', 'product_name', 'product_price', 'flavor']  # Додавање на 'flavor'
             missing_fields = [field for field in required_fields if not data.get(field)]
             if missing_fields:
                 return JsonResponse({'message': f'Недостасуваат следниве податоци: {", ".join(missing_fields)}'},
@@ -63,6 +68,7 @@ def submit_order(request):
 
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Грешка во форматот на податоците!'}, status=400)
+
 
 
 def contact_view(request):
