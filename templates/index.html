@@ -210,25 +210,28 @@
 
     <div class="row">
         {% for product in products %}
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-light rounded">
                     <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description|truncatewords:20 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex flex-column">
-                                <span class="text-muted">{{ product.price }} МКД</span>
-                                 {% if product.quantity == 0 %}
-                                    <span class="text-danger">Нема на залиха</span>
-                                    {% else %}
+                        <p class="card-text text-muted">{{ product.description|truncatewords:20 }}</p>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="text-primary font-weight-bold">{{ product.price }} МКД</span>
+                                {% if product.quantity == 0 %}
+                                    <span class="text-danger d-block">Нема на залиха</span>
+                                    <button class="btn btn-secondary w-100 mt-2" disabled>
+                                        <i class="bi bi-cart-plus me-2"></i> Додади во кошничка
+                                    </button>
+                                {% else %}
                                     <span class="text-muted">Достапна количина: {{ product.quantity }}</span>
+                                    <button class="btn btn-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="setProductData('{{ product.name }}', '{{ product.price }}')">
+                                        <i class="bi bi-cart-plus me-2"></i> Додади во кошничка
+                                    </button>
                                 {% endif %}
                             </div>
-                            <button class="btn btn-primary d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="setProductData('{{ product.name }}', '{{ product.price }}')">
-    <i class="bi bi-cart-plus me-2"></i> <!-- Икона за кошничка -->
-    Додади во кошничка
-</button>
                         </div>
                     </div>
                 </div>
@@ -236,6 +239,7 @@
         {% endfor %}
     </div>
 </div>
+
 
     <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -262,6 +266,22 @@
                         <div class="mb-3">
                             <label for="city" class="form-label">Град</label>
                             <input type="text" class="form-control" id="city" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="flavor" class="form-label">Одбери Вкус</label>
+                           <select class="form-select" id="flavor" name="flavor" required>
+    <option value="" disabled selected>Избери вкус</option>
+    <option value="dragonFruitIce12k">DRAGON FRUIT ICE 12k & 15k</option>
+    <option value="pinkLemonade12k">PINK LEMONADE 12k & 15k</option>
+    <option value="watermelonIce15k">WATERMELLON ICE 15k</option>
+    <option value="blueSourRaspberry12k">BLUESOUR RASPBERRY 12k</option>
+    <option value="strawberryKiwi12k">STRAWBERRY KIWI 12k</option>
+    <option value="blueberryOnIce12k">BLUEBERRY ON ICE 12k</option>
+    <option value="mixedBerries12k">MIXED BERRIES 12k</option>
+    <option value="drBlue12k">DR BLUE 12k</option>
+    <option value="love66">LOVE 66 12k</option>
+    <option value="berryLemonade12k">BERRY LEMONADE 12k</option>
+</select>
                         </div>
                         <div class="mb-3">
                             <label for="productName" class="form-label">Продукт</label>
@@ -294,47 +314,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <script>
-        function setProductData(name, price) {
-            document.getElementById('productName').value = name;
-            document.getElementById('productPrice').value = price;
-        }
+  <script>
+    function setProductData(name, price) {
+        document.getElementById('productName').value = name;
+        document.getElementById('productPrice').value = price;
+    }
 
-        document.getElementById("orderForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Блокирање на стандардното испраќање на формата
+    document.getElementById("orderForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Блокирање на стандардното испраќање на формата
 
-    // Составување на податоците од формата
-    const formData = {
-        full_name: document.getElementById("fullName").value,
-        phone: document.getElementById("phone").value,
-        address: document.getElementById("address").value,
-        city: document.getElementById("city").value,
-        product_name: document.getElementById("productName").value,
-        product_price: document.getElementById("productPrice").value
-    };
+        // Составување на податоците од формата
+        const formData = {
+            full_name: document.getElementById("fullName").value,
+            phone: document.getElementById("phone").value,
+            address: document.getElementById("address").value,
+            city: document.getElementById("city").value,
+            product_name: document.getElementById("productName").value,
+            product_price: document.getElementById("productPrice").value,
+            flavor: document.getElementById("flavor").value  // Додадено поле за вкус
+        };
 
-    // AJAX запрос за испраќање на податоците
-    fetch("{% url 'submit_order' %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())  // Читање на JSON одговорот
-    .then(data => {
-        // Обработка на JSON одговорот
-        if (data.message) {
-            alert(data.message);  // Покажи порака од серверот
-        } else {
-            alert("Нарачката не беше испратена.");
-        }
-    })
-    .catch(error => {
-        console.error("Грешка при испраќање на нарачката:", error);
+        // AJAX запрос за испраќање на податоците
+        fetch("{% url 'submit_order' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())  // Читање на JSON одговорот
+        .then(data => {
+            // Обработка на JSON одговорот
+            if (data.message) {
+                alert(data.message);  // Покажи порака од серверот
+            } else {
+                alert("Нарачката не беше испратена.");
+            }
+        })
+        .catch(error => {
+            console.error("Грешка при испраќање на нарачката:", error);
+        });
     });
-});
-    </script>
+</script>
+
 </body>
 </html>
