@@ -5,7 +5,6 @@ from django.core.mail import send_mail
 import json
 from django.http import JsonResponse
 
-
 # Првична страница која ги прикажува сите продукти
 def index(request):
     products = Product.objects.all()  # земи сите производи од базата
@@ -19,10 +18,11 @@ def send_order_email(order_data):
     message += f"Телефон: {order_data['phone']}\n"
     message += f"Адреса: {order_data['address']}\n"
     message += f"Град: {order_data['city']}\n"
-    message += f"Производ: {order_data['product_name']}\n"
+    message += f"Вејп: {order_data['product_name']}\n"
     message += f"Цена: {order_data['product_price']}\n"
 
     try:
+        # Испраќање на емаил до администраторот
         send_mail(
             subject,
             message,
@@ -41,23 +41,46 @@ def submit_order(request):
             # Парсирање на податоците од JSON телото на барањето
             data = json.loads(request.body)
 
-            # Извлекување на податоци
-            order_data = {
-                'full_name': data.get('full_name'),
-                'phone': data.get('phone'),
-                'address': data.get('address'),
-                'city': data.get('city'),
-                'product_name': data.get('product_name'),
-                'product_price': data.get('product_price'),
-            }
+            # Проверка дали сите потребни податоци се присутни
+            required_fields = ['full_name', 'phone', 'address', 'city', 'product_name', 'product_price']
+            missing_fields = [field for field in required_fields if not data.get(field)]
+            if missing_fields:
+                return JsonResponse({'message': f'Недостасуваат следниве податоци: {", ".join(missing_fields)}'},
+                                    status=400)
+
+            # Проверка дали цената е валиден број
+            try:
+                product_price = float(data.get('product_price'))
+                if product_price <= 0:
+                    return JsonResponse({'message': 'Цената на производот мора да биде поголема од 0'}, status=400)
+            except ValueError:
+                return JsonResponse({'message': 'Цената на производот мора да биде валиден број'}, status=400)
 
             # Испраќање на емаил за нарачката
-            send_order_email(order_data)
+            send_order_email(data)
 
-            # Ако нарачката е успешно испратена, врати успесна порака
             return JsonResponse({'message': 'Нарачката е успешно испратена!'}, status=200)
 
-        except Exception as e:
-            return JsonResponse({'message': f'Грешка при обработка на нарачката: {str(e)}'}, status=500)
-    else:
-        return JsonResponse({'message': 'Методот не е поддржан'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Грешка во форматот на податоците!'}, status=400)
+
+
+def contact_view(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        subject = request.POST['subject']
+        message = request.POST['message']
+
+        full_message = f"Име: {name}\nЕ-маил: {email}\n\nПорака:\n{message}"
+
+        send_mail(
+            subject,
+            full_message,
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.CONTACT_EMAIL],  # треба да го додадеш во settings.py
+        )
+
+        return render(request, 'contact.html', {'message_sent': True})
+
+    return render(request, 'contact.html')
