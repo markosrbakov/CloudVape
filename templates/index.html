@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CloudVape</title>
+    <link rel="icon" href="/media/logo.png" type="image/png">
+    <link rel="icon" href="/media/logo.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/media/logo.png" sizes="16x16" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="description" content="CloudVape - Продавница за квалитетни вејпови и течности. Широк избор на опрема за вапирање, иновации и најнови модели на пазари во Европа.">
+    <meta name="keywords" content="CloudVape, вејпови, течности за вејпови, вапирање, најдобри вејпови, е-цигари, опрема за вапирање, течности со вкус, најефтини вејпови, вапинг Европа, нови вејпови, вапинг магазини, иновации за вапирање">
+    <meta name="author" content="CloudVape - Продавница за Вејпови">
+    <meta name="robots" content="index, follow">
     <style>
         .navbar {
             position: absolute;
@@ -68,14 +75,17 @@
             font-size: 0.9rem;
             color: #555;
         }
-        .btn-primary {
-            background-color: #6c757d;
-            border: none;
-            transition: background-color 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #5a6268;
-        }
+      .btn-primary {
+    background-color: #f06292; /* Пастелно розова */
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #d81b60; /* Темно розова при hover */
+    transform: scale(1.05); /* Мало зголемување при hover */
+}
         .text-muted {
             color: #333;
         }
@@ -87,10 +97,17 @@
             justify-content: space-between;
             align-items: center;
         }
-        .carousel-inner img {
+       .carousel-inner img {
             width: 100%;
             height: 400px;
             object-fit: cover;
+            }
+
+
+        @media (max-width: 768px) {
+    .carousel-inner img {
+        height: 300px;
+            }
         }
         .carousel-caption {
             padding: 20px;
@@ -107,24 +124,48 @@
             color: #fff;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
         }
+
+        .footer-link:hover {
+            color: #fff;
+        }
+
+        .social-icons {
+            margin-top: 10px;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            margin: 0 12px;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.3);
+            filter: brightness(1.2);
+        }
     </style>
 </head>
 <body>
 
    <nav class="navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Vape Shop</a>
+        <a class="navbar-brand" href="{% url 'index' %}">Cloud Vape</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="#">Почетна</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#kontakt">Kontakt</a>
+                    <a class="nav-link" href="#products">Продукти</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">Контакт</a>
+                </li>
+
             </ul>
         </div>
     </div>
@@ -133,21 +174,21 @@
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="../media/slide.jpeg" class="d-block w-100" alt="...">
+            <img src="../media/slideshow.jpg" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block text-center">
                 <h1>Cloud Vape</h1>
                 <p>Искуси ја моќта на најдобрите Puffs! Нарачај денес и уживај во обилниот ДИМ</p>
             </div>
         </div>
         <div class="carousel-item">
-            <img src="../media/slide.jpeg" class="d-block w-100" alt="...">
+            <img src="../media/slideshowtwo.jpg" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block text-center">
                 <h1>Cloud Vape</h1>
                 <p>Искуси ја моќта на најдобрите Puffs! Нарачај денес и уживај во обилниот ДИМ</p>
             </div>
         </div>
         <div class="carousel-item">
-            <img src="../media/slide.jpeg" class="d-block w-100" alt="...">
+            <img src="../media/slideshowthree.jpg" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block text-center">
                 <h1>Cloud Vape</h1>
                 <p>Искуси ја моќта на најдобрите Puffs! Нарачај денес и уживај во обилниот ДИМ</p>
@@ -164,27 +205,33 @@
     </button>
 </div>
 
-    <div class="container">
-        <h1 class="my-5 text-center">Достапни продукти: </h1>
+<div class="container" id="products">
+    <h1 class="my-5 text-center">Достапни продукти: </h1>
 
-        <div class="row">
-            {% for product in products %}
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ product.name }}</h5>
-                            <p class="card-text">{{ product.description|truncatewords:20 }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted">${{ product.price }}</span>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="setProductData('{{ product.name }}', '{{ product.price }}')">Додади во кошничка</button>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex flex-column">
+                                <span class="text-muted">{{ product.price }} МКД</span>
+                                <span class="text-muted">Достапна количина: {{ product.quantity }}</span>
                             </div>
+                            <button class="btn btn-primary d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="setProductData('{{ product.name }}', '{{ product.price }}')">
+    <i class="bi bi-cart-plus me-2"></i> <!-- Икона за кошничка -->
+    Додади во кошничка
+</button>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
+</div>
 
     <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -230,16 +277,60 @@
     </div>
 
     <footer class="text-center py-4">
+          <div class="d-flex justify-content-center align-items-center">
+        <p class="mb-0 me-2">Најди не на:</p>
+              <a href="https://www.instagram.com/cloudvape.mk" target="_blank">
+            <img src="/media/instagram.png" alt="Instagram" class="social-icon">
+        </a>
+    </div>
         <p>&copy; 2025 CloudVape - Сите права се задржани</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     <script>
         function setProductData(name, price) {
             document.getElementById('productName').value = name;
             document.getElementById('productPrice').value = price;
         }
+
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Блокирање на стандардното испраќање на формата
+
+    // Составување на податоците од формата
+    const formData = {
+        full_name: document.getElementById("fullName").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        product_name: document.getElementById("productName").value,
+        product_price: document.getElementById("productPrice").value
+    };
+
+    // AJAX запрос за испраќање на податоците
+    fetch("{% url 'submit_order' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())  // Читање на JSON одговорот
+    .then(data => {
+        // Обработка на JSON одговорот
+        if (data.message) {
+            alert(data.message);  // Покажи порака од серверот
+        } else {
+            alert("Нарачката не беше испратена.");
+        }
+    })
+    .catch(error => {
+        console.error("Грешка при испраќање на нарачката:", error);
+    });
+});
     </script>
 </body>
 </html>
