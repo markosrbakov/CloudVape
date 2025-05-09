@@ -219,7 +219,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex flex-column">
                                 <span class="text-muted">{{ product.price }} МКД</span>
-                                <span class="text-muted">Достапна количина: {{ product.quantity }}</span>
+                                 {% if product.quantity == 0 %}
+                                    <span class="text-danger">Нема на залиха</span>
+                                    {% else %}
+                                    <span class="text-muted">Достапна количина: {{ product.quantity }}</span>
+                                {% endif %}
                             </div>
                             <button class="btn btn-primary d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="setProductData('{{ product.name }}', '{{ product.price }}')">
     <i class="bi bi-cart-plus me-2"></i> <!-- Икона за кошничка -->
