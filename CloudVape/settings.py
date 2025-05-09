@@ -30,8 +30,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'cloudvape790@gmail.com'  # Твојот емаил
-EMAIL_HOST_PASSWORD = 'xhowufckzcpkamyp'
+EMAIL_HOST_USER = 'cloudvape790@gmail.com'  # Вашиот Gmail емаил
+EMAIL_HOST_PASSWORD = 'xupmjydicjxrawxy'  # Вашата Gmail лозинка или апликациска лозинка ако користите 2-факторска автентикација
+
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+CONTACT_EMAIL = 'cloudvape790@gmail.com'
 
 
 ALLOWED_HOSTS = ['.vercel.app']
