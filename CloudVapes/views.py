@@ -23,6 +23,7 @@ def send_order_email(order_data):
     message += f"Град: {order_data['city']}\n"
     message += f"Вејп: {order_data['product_name']}\n"
     message += f"Цена: {order_data['product_price']}\n"
+    message += f"Количина: {order_data['kolicina']}\n"
     message += f"Вкус: {order_data['flavor']}\n"  # Додавање на вкусот
 
     try:
