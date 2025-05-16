@@ -222,7 +222,7 @@
                                 {% if product.quantity > 0 %}
                                     <span class="text-primary font-weight-bold">{{ product.price }} МКД</span>
                                 {% endif %}
-                                
+
                                 {% if product.quantity == 0 %}
                                     <span class="text-danger d-block">Нема на залиха</span>
                                     <button class="btn btn-secondary w-100 mt-2" disabled>
@@ -242,7 +242,6 @@
         {% endfor %}
     </div>
 </div>
-
 
 
     <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
@@ -278,8 +277,8 @@
     <option value="dragonFruitIce12k">DRAGON FRUIT ICE 12k & 15k</option>
     <option value="pinkLemonade12k">PINK LEMONADE 12k & 15k</option>
     <option value="watermelonIce15k">WATERMELLON ICE 15k</option>
-    <option value="cherryCola22k">CHERRY COLA 22k</option>
-    <option value="peachIce22k">PEACH ICE 22k</option>
+                               <option value="cherryCola22k">CHERRY COLA 22k</option>
+                               <option value="peachIce22k">PEACH ICE 22k</option>
     <option value="blueSourRaspberry12k">BLUESOUR RASPBERRY 12k</option>
     <option value="strawberryKiwi12k">STRAWBERRY KIWI 12k</option>
     <option value="blueberryOnIce12k">BLUEBERRY ON ICE 12k</option>
@@ -290,6 +289,10 @@
 </select>
                         </div>
                         <div class="mb-3">
+                            <label for="kolicina" class="form-label">Количина</label>
+                            <input type="number" class="form-control" id="kolicina" required>
+                        </div>
+                        <div class="mb-3">
                             <label for="productName" class="form-label">Продукт</label>
                             <input type="text" class="form-control" id="productName" readonly>
                         </div>
@@ -297,7 +300,7 @@
                             <label for="productPrice" class="form-label">Цена</label>
                             <input type="text" class="form-control" id="productPrice" readonly>
                         </div>
-                        <p class="text-danger mt-3">
+                         <p class="text-danger mt-3">
                         * Цената за достава не е вклучена. Доставата изнесува 150 МКД со карго (испорака до 3 работни дена).
                         </p>
                         <div class="mb-3">
@@ -339,6 +342,7 @@
             address: document.getElementById("address").value,
             city: document.getElementById("city").value,
             product_name: document.getElementById("productName").value,
+            kolicina: document.getElementById("kolicina").value,
             product_price: document.getElementById("productPrice").value,
             flavor: document.getElementById("flavor").value  // Додадено поле за вкус
         };
